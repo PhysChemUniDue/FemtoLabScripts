@@ -20,18 +20,34 @@ p0 = ones(5)
 # Fit the data
 fit = curve_fit(model, x, s, p0)
 
+# Generate Data Points for Calculated Values
+L = 11
+mcalc = range(12, 30, length=L)
+vcalc = range(0, 30, length=L)
+mvcalc = Array{Float64,2}(undef, 0, 2)
+for mm in mcalc, vv in vcalc
+    global mvcalc = vcat(mvcalc, [mm vv])
+end
+scalc = model(mvcalc, fit.param)
+scalc[scalc .< 0] .= NaN
+
 # Plot the data
+println("Plotting data...")
 pygui(true)
-scatter3D(s,m,v, label="real Sample power")
-scatter3D(model(x,fit.param),m,v, label="calculated Sample Power")
-xlabel("Sample Power")
-ylabel("Max Power")
-zlabel("Power Value")
+figure()
+scatter3D(m,v,s, label="real Sample power", color="C1")
+mesh(mcalc, vcalc, reshape(scalc, (L,L)))
+# scatter3D(model(x,fit.param),m,v, label="calculated Sample Power")
+xlabel("Max Power")
+ylabel("Power Value")
+zlabel("Sample Power")
 legend()
 
+println("...done!")
+
 # Print calibration equation
-param = round.(fit.param,digits=3)
+param = round.(fit.param,digits=5)
 println("------------------------------------------------------------------")
 println("Equation to calculate Sample Power with Max Power and Power Value:")
-println("s = $(param[1]) + ($(param[2]))*m + ($(param[3]))*m^2 + ($(param[4]))*v + ($(param[5]))*v^2")
+println("s = $(param[1]) + ($(param[2]))*m + ($(param[3]))*m**2 + ($(param[4]))*v + ($(param[5]))*v**2;")
 println("------------------------------------------------------------------")
