@@ -3,7 +3,7 @@ using LsqFit
 using DelimitedFiles
 
 # Load Config File in /FemtoLabScripts/Data
-up_power = readdlm(joinpath(@__DIR__,"../Data/uc_power.config"), header=true)
+up_power = readdlm(joinpath(@__DIR__,"../Data/uc_power_20201118.config"), header=true)
 
 # Load Values for max_power, power_value and sample_power
 m = up_power[1][:,1]
